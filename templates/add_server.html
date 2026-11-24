@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Add server{% endblock %}
+{% block body %}
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <strong>Demo Monitoring</strong>
+      <span>Register a Linux host</span>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Back</a>
+      <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <ul class="flash-list">
+    {% for category, message in messages %}
+    <li class="flash {{ category }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
+  <div class="panel" style="max-width: 560px;">
+    <h1>Add Linux server</h1>
+    <p class="muted">Credentials stay in memory for this process only. Metrics are collected agentlessly over SSH.</p>
+    <form method="post" class="form-grid" style="margin-top: 1.25rem;">
+      <label>
+        Display name
+        <input type="text" name="name" value="{{ form.get('name', '') }}" required placeholder="web-01">
+      </label>
+      <label>
+        Host (hostname or IP)
+        <input type="text" name="host" value="{{ form.get('host', '') }}" required placeholder="192.168.1.10">
+      </label>
+      <label>
+        SSH port
+        <input type="number" name="port" value="{{ form.get('port', 22) }}" min="1" max="65535" required>
+      </label>
+      <label>
+        SSH username
+        <input type="text" name="ssh_user" value="{{ form.get('ssh_user', '') }}" required autocomplete="username">
+      </label>
+      <label>
+        SSH password
+        <input type="password" name="ssh_password" required autocomplete="current-password">
+      </label>
+      <div style="display:flex; gap:0.6rem; margin-top:0.35rem;">
+        <button class="btn btn-primary" type="submit">Add server</button>
+        <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

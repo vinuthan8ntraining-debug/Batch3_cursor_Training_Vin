@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ server.name }}{% endblock %}
+{% block head %}
+<meta http-equiv="refresh" content="{{ refresh_seconds }}">
+{% endblock %}
+{% block body %}
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <strong>{{ server.name }}</strong>
+      <span class="mono">{{ server.host }}:{{ server.port }} · user {{ server.ssh_user }}</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="refresh-note">Refresh {{ refresh_seconds }}s</span>
+      <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="toolbar" style="margin-bottom: 0.5rem;">
+      <h1 style="margin:0;">Live metrics</h1>
+      <form method="post" action="{{ url_for('remove_server', server_id=server.id) }}" onsubmit="return confirm('Remove this server from monitoring?');">
+        <button class="btn btn-danger" type="submit">Remove server</button>
+      </form>
+    </div>
+    <p class="muted">Read-only view · no remote changes from this UI</p>
+
+    {% if not metrics.ok %}
+    <div class="error-box">
+      <strong>Unreachable</strong>
+      <div class="mono" style="margin-top:0.35rem;">{{ metrics.error or 'SSH connection failed' }}</div>
+    </div>
+    {% else %}
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="label">CPU</div>
+        <div class="value">{% if metrics.cpu_percent is not none %}{{ metrics.cpu_percent }}%{% else %}—{% endif %}</div>
+      </div>
+      <div class="metric">
+        <div class="label">Memory</div>
+        <div class="value">{% if metrics.memory %}{{ metrics.memory.percent }}%{% else %}—{% endif %}</div>
+        {% if metrics.memory %}
+        <div class="muted" style="margin-top:0.25rem; font-size:0.85rem;">
+          {{ metrics.memory.used_mb }} / {{ metrics.memory.total_mb }} MB
+        </div>
+        {% endif %}
+      </div>
+      <div class="metric">
+        <div class="label">Interfaces</div>
+        <div class="value">{{ metrics.network|length }}</div>
+      </div>
+      <div class="metric">
+        <div class="label">Listening ports</div>
+        <div class="value">{{ metrics.ports|length }}</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if metrics.ok %}
+  <div class="panel">
+    <h2>Network</h2>
+    {% if not metrics.network %}
+    <p class="muted">No non-loopback interfaces reported.</p>
+    {% else %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Interface</th>
+            <th>RX</th>
+            <th>TX</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for iface in metrics.network %}
+          <tr>
+            <td class="mono">{{ iface.name }}</td>
+            <td class="mono">{{ iface.rx_human }}</td>
+            <td class="mono">{{ iface.tx_human }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <h2>Ports</h2>
+    {% if not metrics.ports %}
+    <p class="muted">No listening ports returned (ss/netstat unavailable or empty).</p>
+    {% else %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Proto</th>
+            <th>State</th>
+            <th>Local address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in metrics.ports %}
+          <tr>
+            <td class="mono">{{ p.proto }}</td>
+            <td>{{ p.state }}</td>
+            <td class="mono">{{ p.local }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

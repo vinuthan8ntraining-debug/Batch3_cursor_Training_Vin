@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block body %}
+<div class="login-wrap">
+  <div class="panel login-card">
+    <div class="eyebrow">Demo Monitoring Infrastructure</div>
+    <h1>Sign in</h1>
+    <p class="muted">Read-only Linux metrics over agentless SSH. Local demo only.</p>
+    {% if error %}
+    <div class="flash error" style="margin: 1rem 0;">{{ error }}</div>
+    {% endif %}
+    <form method="post" class="form-grid" style="margin-top: 1.25rem;">
+      <label>
+        Username
+        <input type="text" name="username" value="admin" autocomplete="username" required autofocus>
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn btn-primary" type="submit">Sign in</button>
+    </form>
+    <p class="muted" style="margin-top: 1rem; font-size: 0.82rem;">Default demo: <span class="mono">admin</span> / <span class="mono">admin</span></p>
+  </div>
+</div>
+{% endblock %}

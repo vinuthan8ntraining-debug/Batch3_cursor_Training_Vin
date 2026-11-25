@@ -36,6 +36,11 @@
       <div class="metric">
         <div class="label">CPU</div>
         <div class="value">{% if metrics.cpu_percent is not none %}{{ metrics.cpu_percent }}%{% else %}—{% endif %}</div>
+        {% if metrics.cpu_percent is not none %}
+        <div class="meter meter-lg" title="CPU {{ metrics.cpu_percent }}%">
+          <div class="meter-fill {% if metrics.cpu_percent >= 85 %}hot{% elif metrics.cpu_percent >= 60 %}warm{% endif %}" style="width: {{ metrics.cpu_percent }}%;"></div>
+        </div>
+        {% endif %}
       </div>
       <div class="metric">
         <div class="label">Memory</div>
@@ -43,6 +48,9 @@
         {% if metrics.memory %}
         <div class="muted" style="margin-top:0.25rem; font-size:0.85rem;">
           {{ metrics.memory.used_mb }} / {{ metrics.memory.total_mb }} MB
+        </div>
+        <div class="meter meter-lg" title="Memory {{ metrics.memory.percent }}%">
+          <div class="meter-fill {% if metrics.memory.percent >= 85 %}hot{% elif metrics.memory.percent >= 60 %}warm{% endif %}" style="width: {{ metrics.memory.percent }}%;"></div>
         </div>
         {% endif %}
       </div>

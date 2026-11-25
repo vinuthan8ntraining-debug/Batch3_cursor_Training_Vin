@@ -112,7 +112,7 @@ For each reachable server, show at least:
 | Auth | Session cookie; password hash for `admin` |
 | Metrics | SSH from app → target; parse command output |
 | State | In-memory dict/list for servers and sessions |
-| Run | Local: `python app.py` binds `0.0.0.0:5777` |
+| Run | Local: `python app.py` binds `0.0.0.0:57275` |
 
 Suggested remote commands (implementation guidance, not UI):
 
@@ -139,14 +139,14 @@ Suggested remote commands (implementation guidance, not UI):
 
 ## 8. Local run (minimal)
 
-**How to run (Step 1):** `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python app.py` → open `http://<host>:5777` (binds `0.0.0.0:5777`).
+**How to run:** `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python app.py` → open `http://<host>:57275` (binds `0.0.0.0:57275`). Demo login: `admin` / `admin`.
 
 1. Create a Python venv and install dependencies (`flask`; later: SSH client such as `paramiko`, password hashing).
 2. Set admin password hash (or demo password used to generate the hash) via env/config (Step 2+).
-3. Start the Flask app (`python app.py` → `0.0.0.0:5777`).
-4. Open `http://<host>:5777` in a browser; after later steps: sign in as `admin`, add a reachable Linux host, and confirm metrics refresh every 10s.
+3. Start the Flask app (`python app.py` → `0.0.0.0:57275`).
+4. Open `http://<host>:57275` in a browser; sign in as `admin` / `admin`, add a reachable Linux host, and confirm metrics refresh every 10s.
 
-**Security (local demo):** app listens on all interfaces (`0.0.0.0:5777`) — use only on trusted networks; do not commit `.venv/`, `.env`, or real SSH passwords.
+**Security (local demo):** app listens on all interfaces (`0.0.0.0:57275`) — use only on trusted networks; do not commit `.venv/`, `.env`, or real SSH passwords.
 
 ---
 
